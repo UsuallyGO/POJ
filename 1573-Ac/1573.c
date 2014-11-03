@@ -1,0 +1,139 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define DEBUG 0
+
+#define EXIT 0
+#define LOOP 1
+#define FINE 2
+
+#define E -1 
+#define N -2 
+#define W -3
+#define S -4
+
+#if DEBUG
+void show(int **p, int len, int wid)
+{
+    int index, second;
+
+    for(index=0; index<len; index++)
+    {
+	for(second=0; second<wid; second++)
+	    printf("%d ", p[index][second]);
+	
+	printf("\n");
+    }
+}
+#endif 
+
+int main()
+{
+    int row, col, pos;
+    int **qipan;
+    char *qizi;
+    int index;
+    int sec_in;
+    int steps;
+    int flags;
+    int cur;
+
+    while(1)
+    {
+	scanf("%d %d %d", &row, &col, &pos);
+	if(!row && !col && !pos)
+	    break;
+	
+	qipan = (int**)malloc(sizeof(int*)*row);
+	for(index=0; index<row; index++)
+	    qipan[index] = (int*)malloc(sizeof(int)*col);
+	
+	for(index=0; index<row; index++)
+	{
+	    qizi = (char*)malloc(sizeof(char)*col+1);
+	    scanf("%s", qizi);
+	    for(sec_in=0; sec_in<col; sec_in++)
+	    {
+		switch(qizi[sec_in])
+		{
+		    case 'E':
+			qipan[index][sec_in] = E;
+			break;
+		    case 'N':
+			qipan[index][sec_in] = N;
+			break;
+		    case 'W':
+			qipan[index][sec_in] = W;
+			break;
+		    case 'S':
+			qipan[index][sec_in] = S;
+			break;
+		    default:
+			;
+		}
+	    }
+	    getchar();
+	    free(qizi);
+	}
+#if DEBUG
+	show(qipan, row, col);
+#endif
+	index = 0;
+	sec_in = pos-1;
+	steps = 1;
+	flags = FINE;
+
+	while(1)
+	{
+	    cur = qipan[index][sec_in];
+	    qipan[index][sec_in] = steps;
+	    switch(cur)
+	    {
+		case E:
+		    if((sec_in+1) == col)
+			flags = EXIT;
+		    else
+			sec_in++;
+		    break;
+		case N:
+		    if((index-1) < 0)
+			flags = EXIT;
+		    else
+			index--;
+		    break;
+		case W:
+		    if((sec_in-1) < 0)
+			flags = EXIT;
+		    else
+			sec_in--;
+		    break;
+		case S:
+		    if((index+1) == row)
+			flags = EXIT;
+		    else
+			index++;
+		    break;
+		default:
+		    flags = LOOP;
+		    printf("%d step(s) before a loop of %d step(s)\n", cur-1, steps-cur);
+	    }
+	    if(flags == EXIT)
+	    {
+		printf("%d step(s) to exit\n", qipan[index][sec_in]);
+		break;
+	    }
+	
+	    if(flags == LOOP)
+		break;
+	
+	    steps++;
+	}
+
+	for(index=0; index<row; index++)
+	    free(qipan[index]);
+	free(qipan);
+    }
+
+    return 0;
+}

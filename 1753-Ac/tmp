@@ -1,0 +1,143 @@
+0 1 3 6 
+6 12 24 49 98 
+98 196 393 787 1574 
+1574 3148 6297 12595 25191 
+25191 Before BFS.
+curr->number:25191
+ 43623   34407   4199   21351   61159   11303   17735   29047   27311   26243   24597   25430   25323   25129   25152   25204  curr->number:43623
+ 20071   55399   39783   9959   58407   36167   47479   41647   44675   43029   43862   43755   43561   43584   43636  curr->number:34407
+ 62567   46951   2791   51239   41287   38263   36527   33411   33813   34646   34539   34345   34368   34420  curr->number:4199
+ 8551   40167   24103   14151   887   6319   5251   4629   4438   4331   4137   4160   4212  curr->number:21351
+ 57319   7463   29767   16503   23471   22403   20757   21078   21483   21289   21312   21364  curr->number:61159
+ 41127   51655   65015   58927   59907   60565   61398   61035   61097   61120   61172  curr->number:11303
+ 2823   16183   9455   10435   11861   11542   11435   11369   11264   11316  curr->number:17735
+ 22103   19855   16803   18229   17526   17867   17673   17760   17748  curr->number:29047
+ 31167   30099   29445   28742   29179   28985   29008   29028  curr->number:27311
+ 28235   26845   27550   27171   27361   27272   27324  curr->number:26243
+ 25841   26546   26127   26317   26276   26256  curr->number:24597
+ 24868   24729   24667   24626   24582  curr->number:25430
+ 25562   25368   25457   25413  curr->number:25323
+ 25253   25292   25336  curr->number:25129
+ 25102   25146  curr->number:25152
+ 25171  curr->number:25204
+curr->number:20071
+curr->number:55399
+curr->number:39783
+curr->number:9959
+curr->number:58407
+curr->number:36167
+curr->number:47479
+curr->number:41647
+curr->number:44675
+curr->number:43029
+curr->number:43862
+curr->number:43755
+curr->number:43561
+curr->number:43584
+curr->number:43636
+curr->number:62567
+curr->number:46951
+curr->number:2791
+curr->number:51239
+curr->number:41287
+curr->number:38263
+curr->number:36527
+curr->number:33411
+curr->number:33813
+curr->number:34646
+curr->number:34539
+curr->number:34345
+curr->number:34368
+curr->number:34420
+curr->number:8551
+curr->number:40167
+curr->number:24103
+curr->number:14151
+curr->number:887
+curr->number:6319
+curr->number:5251
+curr->number:4629
+curr->number:4438
+curr->number:4331
+curr->number:4137
+curr->number:4160
+curr->number:4212
+curr->number:57319
+curr->number:7463
+curr->number:29767
+curr->number:16503
+curr->number:23471
+curr->number:22403
+curr->number:20757
+curr->number:21078
+curr->number:21483
+curr->number:21289
+curr->number:21312
+curr->number:21364
+curr->number:41127
+curr->number:51655
+curr->number:65015
+curr->number:58927
+curr->number:59907
+curr->number:60565
+curr->number:61398
+curr->number:61035
+curr->number:61097
+curr->number:61120
+curr->number:61172
+curr->number:2823
+curr->number:16183
+curr->number:9455
+curr->number:10435
+curr->number:11861
+curr->number:11542
+curr->number:11435
+curr->number:11369
+curr->number:11264
+curr->number:11316
+curr->number:22103
+curr->number:19855
+curr->number:16803
+curr->number:18229
+curr->number:17526
+curr->number:17867
+curr->number:17673
+curr->number:17760
+curr->number:17748
+curr->number:31167
+curr->number:30099
+curr->number:29445
+curr->number:28742
+curr->number:29179
+curr->number:28985
+curr->number:29008
+curr->number:29028
+curr->number:28235
+curr->number:26845
+curr->number:27550
+curr->number:27171
+curr->number:27361
+curr->number:27272
+curr->number:27324
+curr->number:25841
+curr->number:26546
+curr->number:26127
+curr->number:26317
+curr->number:26276
+curr->number:26256
+curr->number:24868
+curr->number:24729
+curr->number:24667
+curr->number:24626
+curr->number:24582
+curr->number:25562
+curr->number:25368
+curr->number:25457
+curr->number:25413
+curr->number:25253
+curr->number:25292
+curr->number:25336
+curr->number:25102
+curr->number:25146
+curr->number:25171
+-1
