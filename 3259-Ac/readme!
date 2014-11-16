@@ -1,0 +1,8 @@
+
+Attention Please:
+INT_MAX in <limits.h> is 0x7fffffff
+The problem is :
+
+if(-1>INT_MAX+1) is true!!!
+
+because INT_MAX+1 is overflow
