@@ -14,7 +14,7 @@ int Hungary(int n, int m)
 
 	for(index=1; index<=m; index++)
 	{
-		if(!Visited[index] == Matrix[n][index])
+		if(!Visited[index] && Matrix[n][index])
 		{
 			Visited[index] = 1;
 			if(!Source[index] || Hungary(Source[index], m))
@@ -45,10 +45,12 @@ int main()
 				Matrix[x][y] = 1;
 			}
 			
+//			printf("Comes here\n");
 			counter = 0;
 			for(index=1; index<=n; index++)
 			{
 				memset(Visited, 0, sizeof(Visited));
+				//printf("index:%d\n", index);
 				if(Hungary(index, n))
 					counter++;
 			}
