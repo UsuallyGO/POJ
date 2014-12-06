@@ -20,7 +20,7 @@ typedef struct Farm_t
     int worms;
 }Farm;
 
-#if DEBUG
+#if 1//DEBUG
 void show(Path *p, int nums)
 {
     int index;
@@ -37,9 +37,11 @@ int Bellman_Ford(Path *p, int vertex, int edges)
     int *dist;
     int first, second;
 
+    printf("vertex:%d edges:%d\n", vertex, edges);
+
     dist = (int*)malloc(sizeof(int)*(vertex+1));
-    for(first=0; first<vertex+1; first++)
-	dist[first] = INT_MAX;
+    for(first=1; first<vertex+1; first++)
+	dist[first] = 0x3f3f3f3f;
 #if DEBUG
     printf("Bellman_ford vertex:%d edges:%d\n", vertex, edges);
 #endif
@@ -114,31 +116,11 @@ int main()
 	for(first=0; first<fp.paths; first++)
 	{
 	    scanf("%d %d %d", &pp[edges].source, &pp[edges].end, &pp[edges].value); 
-	    result = find(pp, edges, pp[edges].source, pp[edges].end);
-	    if(result >= 0)
-	    {
-#if DEBUG
-		printf("source:%d  end:%d value:%d\n", pp[edges].source, pp[edges].end, pp[edges].value);
-		printf("result source:%d end:%d value:%d\n", pp[result].source, pp[result].end, pp[result].value);
-#endif
-		if(pp[result].value > pp[edges].value)
-		{
-		    pp[result].value = pp[edges].value;
-		    result = find(pp, edges, pp[edges].end, pp[edges].source);
-		    pp[result].value = pp[edges].value;
-		}
-	    }
-	    else
-	    {
-		if(pp[edges].source != pp[edges].end)
-		{
-		    edges++;
-		    pp[edges].source = pp[edges-1].end;
-		    pp[edges].end = pp[edges-1].source;
-		    pp[edges].value = pp[edges-1].value;
-		}
-		edges++;
-	    }
+	    edges++;
+	    pp[edges].source = pp[edges-1].end;
+	    pp[edges].end = pp[edges-1].source;
+	    pp[edges].value = pp[edges-1].value;
+	    edges++;
 #if DEBUG
 	    printf("Pre pp[%d]  %d  %d  %d\n", edges-1, pp[edges-1].source, pp[edges-1].end, pp[edges-1].value);
 #endif
@@ -147,19 +129,13 @@ int main()
 	for(first=0; first<fp.worms; first++)
 	{
 	    scanf("%d %d %d", &pp[edges].source, &pp[edges].end, &pp[edges].value);
-	    result = find(pp, edges, pp[edges].source, pp[edges].end);
-	    if(result >= 0)
-		pp[result].value = pp[edges].value*(-1);
-	    else
-	    {
-		pp[edges].value = pp[edges].value*(-1);
-		edges++;
-	    }
+	    pp[edges].value = pp[edges].value*(-1);
+	    edges++;
 	}
 
-#if DEBUG	
+//#if DEBUG	
 	show(pp, edges);
-#endif 
+//#endif 
 	result = Bellman_Ford(pp, fp.fields, edges);
 #if DEBUG
 	printf("After Bellman result:%d\n", result);
