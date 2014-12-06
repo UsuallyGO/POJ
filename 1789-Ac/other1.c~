@@ -1,0 +1,201 @@
+#include<iostream.h>
+
+#include<string.h>
+
+#define MAX 2001
+
+#define MAXDEGREE 2001
+
+#define MAXINT 1000000000
+
+using namespace std;
+
+struct edge
+
+{
+
+ int ver;
+
+ int weight;
+
+};
+
+edge edges[MAX+1][MAXDEGREE];
+
+int degree[MAX+1];
+
+string s[MAX+1];
+
+int nvertices;
+
+int start;
+
+int compare(int a,int b)
+
+{
+
+ int count = 0;
+
+ for(int i = 0; i <= 6; i++)
+
+ {
+
+  if(s[a][i] !=s[b][i])
+
+  count++;
+
+ }
+
+ return count;
+
+}
+
+  
+
+ 
+
+int  prim()
+
+{
+
+ start = 1;
+
+ int shortest = 0;
+
+ int i;
+
+ bool intree[MAX+1];
+
+ int distance[MAX+1];
+
+ int parent[MAX+1];
+
+ int v;
+
+ int next;
+
+ int w;
+
+ int dist;
+
+ for(i = 1; i <= nvertices; i++)
+
+ {
+
+  intree[i] = false;
+
+  distance[i] = MAXINT;
+
+  parent[i] = -1;
+
+ }
+
+ distance[start] = 0;
+
+ v = start;
+
+ while(intree[v] == false)
+
+ {
+
+  shortest += distance[v];
+
+  intree[v] = true;
+
+  for(i = 0;i <degree[v];i++)
+
+  {
+
+   next =edges[v][i].ver;
+
+   w = edges[v][i].weight;
+
+   if(distance[next] > w && intree[next] == false)
+
+   {
+
+    distance[next] = w;
+
+    parent[next] = v;
+
+   }
+
+  }
+
+  v = 1; 
+
+  dist = MAXINT;
+
+  for(i = 1; i <= nvertices; i++)
+
+  {
+
+   if((intree[i] == false) && (dist > distance[i]))
+
+    {
+
+     dist = distance[i];
+
+     v = i;
+
+    }
+
+  }
+
+  
+
+ }
+
+ return shortest;
+
+}
+
+int main()
+
+{
+
+ int i;
+
+ while(cin>>nvertices)
+
+ {
+
+  memset(degree,0,sizeof(degree));
+
+  if(nvertices == 0)
+
+  break;
+
+  for(i = 1;i <= nvertices; i++)
+
+  {
+
+   cin>>s[i];
+
+   for(int from = i - 1; from >= 1; from --)
+
+   {
+
+    edges[from][degree[from]].weight =compare(from,i);
+
+    edges[from][degree[from]].ver = i;
+
+    edges[i][degree[i]].weight = compare(from,i);
+
+    edges[i][degree[i]].ver = from;
+
+    degree[from]++;
+
+    degree[i]++;
+
+   }
+
+  }
+
+  int mini_dist = prim();
+
+  cout<<"The highest possible quality is 1/"<<mini_dist<<"."<<endl;
+
+ }
+
+}
