@@ -48,6 +48,7 @@ int main()
 	cases--;
 
 	scanf("%d %d", &n, &m);
+	getchar(); // for enter
 	memset(Matrix, 0, sizeof(Matrix));
 	memset(Source, 0, sizeof(Source));
 	memset(Graph, 0, sizeof(Graph));
@@ -60,51 +61,61 @@ int main()
 		scanf("%c", &c);
 		if(c == '*')
 		{
-		    printf("first:%d second:%d couner:%d\n", first, second, counter);
+		    //printf("first:%d second:%d couner:%d\n", first, second, counter);
 		    Graph[first][second] = counter++;
 		}
 	    }
+	    getchar();
 	}
 
 	for(first=1; first<=n; first++)
 	    for(second=1; second<=m; second++)
-		if(!Graph[first][second])
+		if(Graph[first][second])
 		{
 		    tmpx = first - 1;
 		    tmpy = second;
 		    if(tmpx > 0)
 		    {
-			if(!Graph[tmpx][tmpy])
-			    Matrix[Graph[first][second]][Graph[first][second]] = 1;
+			if(Graph[tmpx][tmpy])
+			    Matrix[Graph[first][second]][Graph[tmpx][tmpy]] = 1;
 		    }
 
 		    tmpx = first;
 		    tmpy = second + 1;
 		    if(second<=m)
 		    {
-			if(!Graph[tmpx][tmpy])
-			    Matrix[Graph[first][second]][Graph[first][second]] = 1;
+			if(Graph[tmpx][tmpy])
+			    Matrix[Graph[first][second]][Graph[tmpx][tmpy]] = 1;
 		    }
 
 		    tmpx = first + 1;
 		    tmpy = second;
 		    if(tmpx <= n)
 		    {
-			if(!Graph[tmpx][tmpy])
-			    Matrix[Graph[first][second]][Graph[first][second]] = 1;
+			if(Graph[tmpx][tmpy])
+			    Matrix[Graph[first][second]][Graph[tmpx][tmpy]] = 1;
 		    }
 
 		    tmpx = first;
 		    tmpy = second-1;
 		    if(tmpy > 0)
 		    {
-			if(!Graph[tmpx][tmpy])
-			    Matrix[Graph[first][second]][Graph[first][second]] = 1;
+			if(Graph[tmpx][tmpy])
+			    Matrix[Graph[first][second]][Graph[tmpx][tmpy]] = 1;
 		    }
 		}
 
 	counter--;
+	#if 0
+	for(first=1; first<=counter; first++)
+	{
+	    for(second=1; second<=counter; second++)
+		printf("%d ", Matrix[first][second]);
+
+	    printf("\n");
+	}
 	printf("counter:%d\n", counter);
+	#endif
 	result = 0;
 	for(index=1; index<=counter; index++)
 	{
@@ -112,8 +123,8 @@ int main()
 	    if(Hungary(index, counter))
 		result++;
 	}
-	printf("result:%d\n", result);
-	result = counter/2 - result;
+	result = counter - result/2;
+//	printf("result:%d\n", result);
 
 	printf("%d\n", result);
     }while(1);
