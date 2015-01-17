@@ -1,0 +1,15 @@
+<html>
+<head> <title>USACO MAR07 round Analysis</title> </head>
+<body bgcolor=#FFFFFF>
+<center><img src='/usaco/cow1.jpg' width='742' height='118'></center>
+<h2>USACO MAR07 Problem 'round' Analysis</h2>
+<h4>by Bruce Merry</h4>
+<p>There are few enough possibilities that we can try them all and just see which
+satisfy the constraints. By fixing the position of one cow, we eliminate the
+issue of counting the same arrangement multiple times, and at the same time
+reduce the number of options to check by a factor of N.</p>
+
+<p>The C++ Standard Template Library has a handy function called next_permutation
+that takes care of all the work in looping over the possible permutations.</p>
+
+

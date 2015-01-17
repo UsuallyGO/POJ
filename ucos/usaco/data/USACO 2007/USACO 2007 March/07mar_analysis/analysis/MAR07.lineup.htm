@@ -1,0 +1,77 @@
+<html>
+<head> <title>USACO MAR07 lineup Analysis</title> </head>
+<body bgcolor=#FFFFFF>
+<center><img src='/usaco/cow1.jpg' width='742' height='118'></center>
+<h2>USACO MAR07 Problem 'lineup' Analysis</h2>
+<h4>by Richard Peng</h4>
+</p>
+Consider the partial sum sequence of each of the k features built by taking the
+sum of all the values up to position i. The problem is equivalent to:<br>
+Given an array s[n][k], find i,j, with the biggest separation for which
+s[i][l]-s[j][l] is constant for all l.
+</p>
+
+<p>
+The problem is now to do this efficiently. Notice that s[i][l]-s[j][l] being
+constant for all l is equivalent to s[i][l]-s[j][l]=s[i][1]-s[j][1] for all l,
+which can be rearranged to become s[i][l]-s[i][1]=s[j][l]-s[j][1] for all l.
+Therefore, we can construct another array a[n][k] where a[i][j]=s[i][j]-s[i][1]
+and the goal is to find i and j with the biggest separation for which
+a[i][l]=a[j][l] for all l.
+</p>
+
+<p>
+This can be done by sorting all the a[i] entries, which takes O(nklogn) time
+(although in practice rarely will all k elements be compared). Another
+alternative is to go by hashing, giving an O(nk) solution. Both solutions are
+fairly straightforward once the final array is constructed.
+</p>
+
+<p>
+Here is a hashing solution (by Richard Peng):
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int h[1000000],hsize,lis[100001][30],n,k;
+
+int findid(int v[30]){
+	int i,p,can,i1;
+	for(p=0,i=0;i&lt;k;i++)
+		p=((p&lt;&lt;2)+(v[i]&gt;&gt;4))^(v[i]&lt;&lt;10);
+	p=p%hsize;
+	if(p&lt;0)	p+=hsize;
+	for(can=0;(!can)&amp;&amp;(h[p]!=-1);p++)
+		for(i1=h[p],can=1,i=0;(can)&amp;&amp;(i&lt;k);i++)
+			can=(v[i]==lis[i1][i]);
+	if(can)	p--;
+	return p;
+}
+
+main(){
+	int i,i1,j,ans,p,same,tem,shif,a;
+	freopen("lineup.in","r",stdin);
+	freopen("lineup.out","w",stdout);
+	hsize=997001;
+	for(i=0;i&lt;1000000;i++)	h[i]=-1;
+	for(scanf("%d%d",&amp;n,&amp;k),k--,i=0;i&lt;k;lis[0][i]=0,i++);
+	h[findid(lis[0])]=0;
+	for(ans=0,i=1,i1=0;i&lt;=n;i++,i1++){
+		scanf("%d",&amp;a);
+		for(shif=a%2,a=(a&gt;&gt;1),j=0;j&lt;k;j++,a=(a&gt;&gt;1))
+			lis[i][j]=lis[i1][j]+(a%2)-shif;
+		p=findid(lis[i]);
+		if(h[p]==-1)	h[p]=i;
+		if((tem=i-h[p])&gt;ans)	ans=tem;
+	}
+	printf("%d\n",ans);
+	return 0;
+}
+</pre>
+
+
+
+
+

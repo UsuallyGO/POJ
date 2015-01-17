@@ -1,0 +1,42 @@
+<html>
+<head> <title>USACO MAR07 latin Analysis</title> </head>
+<body bgcolor=#FFFFFF>
+<center><img src='/usaco/cow1.jpg' width='742' height='118'></center>
+<h2>USACO MAR07 Problem 'latin' Analysis</h2>
+<h4>by Rob Kolstad</h4>
+<p>This is a straightforward program if the input and output can be
+handled.
+<p>Once the word is read, the first character is examined and
+an appropriate print statement is selected.
+
+<p>The JAVA solution of USA's Brian O'Connor follows:
+
+<pre>
+import java.io.*;
+import java.util.*;
+
+class latin {
+  public static void main (String [] args) throws IOException {
+    BufferedReader f = new BufferedReader(new FileReader("latin.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("latin.out")));
+
+    int n = Integer.parseInt(f.readLine());
+
+    for(int i = 0; i &amp;lt; n; i++){
+        String word = f.readLine();
+
+        char first = word.charAt(0);
+
+        if(first == 'a' || first == 'e' || first == 'i' || first == 'o' || first == 'u'){
+            out.println(word + "cow");
+        } else {
+            out.println(word.substring(1) + first + "ow");
+        }
+    }
+    out.close();
+    System.exit(0);
+  }
+}
+</pre>
+
+

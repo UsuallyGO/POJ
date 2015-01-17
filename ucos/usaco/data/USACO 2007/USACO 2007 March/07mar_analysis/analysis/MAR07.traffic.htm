@@ -1,0 +1,158 @@
+<html>
+<head> <title>USACO MAR07 traffic Analysis</title> </head>
+<body bgcolor=#FFFFFF>
+<center><img src='/usaco/cow1.jpg' width='742' height='118'></center>
+<h2>USACO MAR07 Problem 'traffic' Analysis</h2>
+<h4>by Kaan Soral, Onur Soral and Cihat Imamoglu from Turkey</h4>
+<P>Problem: The problem is straightforward: what is edge on which
+maximum number of paths pass? It can be <b>any</b> edge of the
+graph, the problem is to find the number of the maximum paths.  Note
+that the edge might appear closer to the cow's pastures than the
+barn; the path might be in the middle of the 'graph'.
+
+<p>A path always starts from a source node which has an in-degree
+of zero and it ends at the sink, which is always N.
+
+<p>Solution: The main idea is that, for an edge: The number of
+paths that passes through is equal to (I)*(II) where:
+<ul>
+<li>
+(I): the number of ways from the ending node of an edge to the sink node (N) (we will find this from the original graph)
+<li>
+(II): the number of ways from the starting node of an edge to the source nodes (we will find this from the transposed graph)
+</ul>
+
+<p>We will compute this for all edges and the solution will be the
+maximum of all.
+
+<p>To find (I) we will use dynamic programming, since the graph
+comes topologically sorted and there are no cycles, our job is fairly
+easy.
+
+<p>Initial state is forward[N]=1;  (the number of ways that leads
+us to Nth node from Nth node is 1)
+<pre>
+for(i=N-1; i>=1; i--) {
+	        // the number of ways that lead us from vertex i to vertex N is the sum of all
+                // forward values of nodes to which i has a forward edge for all nd's
+		forward[i] = forward[i] + forward[nd] // so we have computed 'nd' before
+                                                      // ('nd' is a node to which i has an edge)
+			// nd >= i (topologically sorted)
+			//forward[i] is the sum of all forward[nd]'s  
+}
+</pre>
+<p> To find (II) we will construct a transposed graph, (all edges
+such x->y will become y->x, i.e., their directions will be reversed.)
+For all nodes i that don't have an incoming edge (for transposed
+graph don't have an outgoing edge), backward[i]=1 ( to determine
+the source nodes )
+<pre>
+for (i=1; i<=N; i++) {  
+		// we compute bacward values the same way, we did as forwards }
+		// backward[i] is the number of paths from i'th node to source nodes in transposed graph 
+		// now it should be very logical that the number
+		// of paths from sources to the sink for i'th node is
+		// backward[i]*forward[i] and for an edge, it is,
+		// forward[end node]*backward[start node], we can
+		// think an edge as a node, nothing changes
+}
+</pre>
+<p> Complexity: The computation of backward and forward array is
+both O(N+M),and the for loop is O(N). In the total, the edge number
+assigns the complexity as O(N+M) All computations are O(N+M) since
+we use adjacency list, it would be O(N^2) for adjacency matrix.
+
+<p>Here is the code:
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define MAXN 5100
+#define MAXM 51000  
+
+typedef struct node {
+    int num;
+    struct node *next;
+} node;
+
+node *newNode(int num) {
+    node *temp=(node *)malloc(sizeof(node));
+    temp-&gt;num=num; temp-&gt;next=NULL;
+    return temp;
+}
+
+node *arrf[MAXN],*arrb[MAXN],*endf[MAXN],*endb[MAXN];        /* Adjacency matrix is used because
+                      					        matrix is sparse and there can
+                                                                be MORE THAN ONE from one edge */
+int N, M, MAX;
+int forward[MAXN], backward[MAXN];
+int inf[MAXN], endp[MAXM], stp[MAXM];                        /* 'inf' counts the number of edges that goes in a node */
+                                                             /* 'stp' is the start point and 'endp' is the end point of an edge */
+
+void read(void) {
+    FILE *input=fopen("traffic.in","r");
+    fscanf(input," %d %d",&amp;N,&amp;M);
+    int i,x,y;
+    for(i=1;i&lt;=M;i++) {
+        fscanf(input," %d %d",&amp;x,&amp;y);
+        inf[y]++;
+        stp[i]=x; endp[i]=y;
+        if(arrf[x]==NULL) {
+            arrf[x]=newNode(y);
+            endf[x]=arrf[x];
+        } else {                                              /* 'arrf' and 'endf' is for normal graph, adjacency list */
+            endf[x]-&gt;next=newNode(y);
+            endf[x]=endf[x]-&gt;next;
+        }
+        if(arrb[y]==NULL) {
+            arrb[y]=newNode(I);
+            endb[y]=arrb[y];
+        } else {                                              /* 'arrb' and 'endb' is for traversed graph, adjacency list */
+            endb[y]-&gt;next=newNode(I);
+            endb[y]=endb[y]-&gt;next;
+        }
+    }
+}
+
+void find(void) {
+    int i;
+    node *current;
+    forward[N]=1;                                            /* Initial state of 'forward' which is for the number of ways i to N */
+    for(i=N-1;i&gt;=1;i--) {                                    /* The graph is topologically sorted */
+        current=arrf[i];
+        while(current!=NULL) {
+            forward[i]+=forward[current-&gt;num];               /* forward[i] is the sum of forwards of nodes that i has edge to, current-&gt;num &lt;= i */
+            current=current-&gt;next;
+        }
+    }
+    for(i=1; i&lt;=N; i++)
+        if(!inf[i])
+            backward[i]=1;                                   /* Initial state of 'backward' which is for the number of ways i to sink nodes*/
+                                                             /* backward[i] is 1 for all nodes which have no inner edge, start nodes of paths, sink nodes */    
+    for(i=1;i&lt;=N;i++) {                                      /* For starts from 1 to N because in traversed graph current-&gt;num is always&gt; =i  */
+        current=arrb[i];
+        while(current!=NULL) {
+            backward[i]+=backward[current-&gt;num];
+            current=current-&gt;next;
+        }
+    }
+    for(i=1;i&lt;=M;i++) {
+        if(forward[endp[i]]*backward[stp[i]]&gt;MAX)
+             MAX=forward[endp[i]]*backward[stp[i]];          /* For all edges, the number of paths that goes through it is multiplication of */
+    }                                                        /* (sum of ways from its start point to source nodes (backward[stp[i]]) )
+                                                                X (sum of ways from its end point to sink node,N (forward[endp[i]]) )   */
+}
+
+void write(void) {
+    FILE *output=fopen("traffic.out","w");
+    fprintf(output,"%d\n",MAX);
+    fclose(output);
+}
+
+int main() {
+    read();
+    find();
+    write();
+    return 0;
+}
+</pre>
+

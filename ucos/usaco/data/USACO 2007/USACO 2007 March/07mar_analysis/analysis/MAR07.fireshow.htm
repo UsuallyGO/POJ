@@ -1,0 +1,13 @@
+<html>
+<head> <title>USACO MAR07 fireshow Analysis</title> </head>
+<body bgcolor=#FFFFFF>
+<center><img src='/usaco/cow1.jpg' width='742' height='118'></center>
+<h2>USACO MAR07 Problem 'fireshow' Analysis</h2>
+<h4>by Bruce Merry</h4>
+<p>A trivial solution is to iterate over all the seconds in the range, and
+check whether it is a multiple of the period of any of the cannons. It can be
+made slightly more efficient by keeping in mind that the modulus (%) operator
+is quite slow. Instead, make an array of booleans and for each cannon, fill in
+all the times at which the cannon fires. The answer is then just the number of
+set flags in the array.</p>
+

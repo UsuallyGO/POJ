@@ -1,0 +1,99 @@
+<html>
+<head> <title>USACO MAR07 balance Analysis</title> </head>
+<body bgcolor=#FFFFFF>
+<center><img src='/usaco/cow1.jpg' width='742' height='118'></center>
+<h2>USACO MAR07 Problem 'balance' Analysis</h2>
+<h4>by Percy Liang</h4>
+<p>
+Here's a first attempt at a solution which is too slow, but will get us on the
+right track.  First sort the cows by increasing position.  We want to find an
+interval of cows i...j such that the number of breed 0 cows equals the number
+of breed 1 cows.  Equivalently, we can associate breed 0 with -1 and breed 1
+with +1 and ask for the widest interval such that the sum of the cows in that
+interval is 0.
+</p>
+
+<p>
+For each of the O(N^2) intervals, we can check whether the sum is 0 in O(N)
+time.  This gives us an O(N^3) algorithm, which is way too slow.  The next step
+is to realize that we can actually compute the sum of an interval in O(1) if we
+precompute partial sums, i.e., for each position i, compute S(i) = the sum of
+cows 1...i.  Then the sum from i to j is just the difference between two
+partial sums: S(j) - S(i-1).
+</p>
+
+<p>
+This leaves us with an O(N^2) solution, which is still too slow for large test
+cases.  Currently, for each right position j = 1...N, we have to consider all
+left positions i = 1...j, which takes O(N).  If we could only do this query in
+O(1) time, then we would be in good shape.  Fortunately, we can do this with a
+bit of clever bookkeeping.  Recall that at position j, we seek the leftmost i
+such that S(i-1) = S(j).  Note that there are 2N+1 such possible values that a
+partial sum could take on, ranging from -N to +N.  If we just store, for each
+possible partial sum value v the leftmost i with S(i-1) = v, then at position
+j, we can find the best i in O(1) time.  Furthermore, this table is easy to
+update as we advance j from 1 to N.  As we proceed, we keep track of the
+overall widest interval.
+</p>
+
+<p>
+The sorting in the beginning takes O(N log N) time, which dominates the O(N)
+time needed for actually finding the widest interval.
+</p>
+
+Alex Schwendner's solution:
+<pre>
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+const int MAXN = 1000000;
+
+struct cow {
+  char breed;
+  int pos;
+} herd[MAXN];
+int n;
+
+int left_most[2*MAXN+1];
+
+inline int cowcmp(const void *p1, const void *p2){
+  return(((cow*)p1) -> pos - ((cow*)p2) -> pos);
+}
+
+int main(){
+  FILE *fin = fopen("balance.in", "r");
+  fscanf(fin, "%d", &n);
+  for(int i = 0; i < n; ++i){
+    int b;
+    fscanf(fin, "%d %d", &b, &herd[i].pos);
+    herd[i].breed = (b == 1) ? +1 : -1;
+  }
+  fclose(fin);
+
+  qsort(herd, n, sizeof(cow), cowcmp);
+
+  for(int i = -n; i <= +n; ++i){
+    left_most[n+i] = -1;
+  }
+
+  int best = 0;
+  int sum = 0;
+  for(int i = 0; i < n; ++i){
+    if(left_most[n+sum] == -1){
+      left_most[n+sum] = herd[i].pos;
+    }
+    sum += herd[i].breed;
+    if(left_most[n+sum] != -1){
+      best >?= herd[i].pos - left_most[n+sum];
+    }
+  }
+
+  FILE *fout = fopen("balance.out", "w");
+  fprintf(fout, "%d\n", best);
+  fclose(fout);
+
+  return(0);
+}
+</pre>
+
+
