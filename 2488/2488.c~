@@ -1,0 +1,256 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define DEBUG 0
+
+#define MAX 8
+
+#define LEFT_BOTTOM_1 1
+#define LEFT_BOTTOM_2 3
+#define LEFT_TOP_1 2
+#define LEFT_TOP_2 4
+#define RIGHT_BOTTOM_1 5
+#define RIGHT_BOTTOM_2 7
+#define RIGHT_TOP_1 6
+#define RIGHT_TOP_2 8
+
+#define VALID 0
+
+struct Step
+{
+    char c;
+    int num;
+};
+
+int BOARD[MAX][MAX];
+struct Step steps[100*100];
+int step_counter = 0;
+
+void oneStep(int x, int y)
+{
+    steps[step_counter].c = y + 'A';
+    steps[step_counter].num = x + 1;
+    step_counter++;
+}
+
+int BackBefore(int x, int y, int m, int n)
+{
+    if(BOARD[x][y] <= RIGHT_TOP_2)
+	return 0; //should not be back, can seek next direction
+}
+
+int newStart(int *x, int *y, int m , int n)
+{
+    int i, j;
+    int *p;
+
+    i = *x;
+    j = *y;
+#if DEBUG
+    printf("i:%d j:%d\n", i, j);
+    printf("m:%d n:%d\n", m, n);
+#endif
+    for(; i < m; i++)
+    {
+	for(; j < n; j++)
+	{
+#if DEBUG
+	    printf("BOARD[%d][%d]:%d ", i, j, BOARD[i][j]);
+#endif
+	    if(BOARD[i][j] == VALID)
+	    {
+		*x = i;
+		*y = j;
+		return 1;
+	    }
+	}
+	j = 0;
+    }
+#if DEBUG
+    printf("\n");
+#endif
+
+    return 0;
+}
+
+int FindNext(int *x, int *y, int direction, int m, int n)
+{
+    int delta_x, delta_y;
+    int error;
+
+    if(BOARD[*x][*y] >= direction) //can not search in this direction
+	return 0;
+
+    switch(direction)
+    {
+    case LEFT_BOTTOM_1:
+	delta_y = -2;
+	delta_x = -1;
+	break;
+    case LEFT_BOTTOM_2:
+	delta_y = -1;
+	delta_x = -2;
+	break;
+    case LEFT_TOP_1:
+	delta_y = -2;
+	delta_x = 1;
+	break;
+    case LEFT_TOP_2:
+	delta_y = -1;
+	delta_x = 2;
+	break;
+    case RIGHT_BOTTOM_1:
+	delta_y = 1;
+	delta_x = -2;
+	break;
+    case RIGHT_BOTTOM_2:
+	delta_y = 2;
+	delta_x = -1;
+	break;
+    case RIGHT_TOP_1:
+	delta_y = 1;
+	delta_x = 2;
+	break;
+    case RIGHT_TOP_2:
+	delta_y = 2;
+	delta_x = 1;
+	break;
+    default:
+	;
+	//should not be here
+    }
+
+    error = 0;
+    *x += delta_x;
+    *y += delta_y;
+    if(*x < 0 || *x >= m)
+	error = 1;//error
+    if(*y < 0 || *y >= n)
+	error = 1;//error
+    if(error || BOARD[*x][*y] != VALID)
+    {
+	*x -= delta_x;
+	*y -= delta_y;
+	return 0;
+    }
+    else
+    {
+#if DEBUG
+	printf("Comes here, direction:%d\n", direction);
+#endif
+	BOARD[*x -delta_x][*y -delta_y] = direction;
+#if DEBUG
+	printf("BOARD[%d][%d]:%d\n", *x-delta_x, *y-delta_y, BOARD[*x-delta_x][*y-delta_y]);
+#endif 
+	return 1;
+    }
+}
+
+void showSteps()
+{
+    int i;
+
+    for(i = 0; i < step_counter; i++)
+	printf("%c%d", steps[i].c, steps[i].num);
+    printf("\n");
+}
+
+void showBoard(int m, int n)
+{
+    int i, j;
+
+    printf("\n");
+    for(i = 0; i < m; i++)
+    {
+	for(j = 0; j < n; j++)
+	    printf("%d ", BOARD[i][j]);
+	printf("\n");
+    }
+}
+
+void tourCheck(int m, int n)
+{
+    int i, j;
+    int x, y;
+    int direction;
+
+    memset(BOARD, 0, sizeof(int)*MAX*MAX); 
+    step_counter = 0;
+
+    x = 0; 
+    y = 0;
+    oneStep(x, y);
+    while(1)
+    {
+#if DEBUG
+	showBoard(m, n);
+#endif
+	if(step_counter == m*n)
+	    break;
+
+	direction = LEFT_BOTTOM_1;
+	while(direction <= RIGHT_TOP_2)
+	{
+	    if(FindNext(&x, &y, direction, m, n))
+	    {
+		oneStep(x, y);
+		break;
+	    }
+	    else
+		direction++;
+	}
+
+#if DEBUG
+	printf("diretcion:%d step_counter:%d x:%d y:%d BOARD[][]:%d\n", direction, step_counter, x, y, BOARD[x][y]);
+#endif
+	if(direction >= RIGHT_TOP_2)//not find a valid direction
+	{
+	    BOARD[x][y] = direction;//for non-next position, it's bigger than RIGHT_TOP_2
+#if DEBUG
+	    printf("BOARD[%d][%d]:%d\n", x, y, BOARD[x][y]);
+#endif
+	    step_counter--;
+	    if(step_counter >= 1)
+	    {
+		BOARD[x][y] = VALID;
+		x = steps[step_counter-1].num -1;
+		y = steps[step_counter-1].c - 'A';
+	    }
+	    else //zero, no step now, need a new start
+	    {
+		if(!newStart(&x, &y, m, n))
+		{
+		    printf("impossible\n");
+		    return;
+		}
+		else
+		{
+		    oneStep(x, y);
+#if DEBUG
+		    printf("new start x:%d y:%d couter:%d\n", x, y, step_counter);
+#endif
+		}
+	    }
+	}
+    }
+
+    showSteps();
+}
+
+int main()
+{
+    int cases, i;
+    int row, column;
+
+    scanf("%d", &cases);
+    for(i = 0; i < cases; i++)
+    {
+	scanf("%d %d", &row, &column);	
+	printf("Scenario #%d:\n", i+1);
+	tourCheck(row, column);
+	printf("\n");
+    }
+
+    return 0;
+}

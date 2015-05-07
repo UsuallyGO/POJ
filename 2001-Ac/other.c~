@@ -1,0 +1,70 @@
+#include<iostream>
+#include<fstream>
+#include<string.h>
+ 
+using namespace std;
+ 
+int n;
+ 
+struct e{
+    int state[26];
+    int cnt;
+};
+ 
+e tree[20004];
+ 
+char c[1004][24];
+ 
+int state;
+ 
+void insert(int s){
+    int i,j=0;
+    for(i=0;i<strlen(c[s]);i++)
+    {
+        if(tree[j].state[c[s][i]-'a']==0)
+        {
+            tree[j].state[c[s][i]-'a']=++state;
+         
+        }
+         
+        j=tree[j].state[c[s][i]-'a'];tree[j].cnt++;
+    }
+}
+ 
+int solve(int s){
+    int i,j,k;
+    j=0;
+    for(i=0;i<strlen(c[s]);i++)
+    {
+         
+        j=tree[j].state[c[s][i]-'a'];
+        if(tree[j].cnt<=1)
+            return i;
+    }
+    return i-1;
+}
+ 
+void read(){
+//  ifstream cin("in.txt");
+    int i,j,k;
+    n=0;
+    while(cin>>c[n])
+        n++;
+     
+    for(i=0;i<n;i++)
+        insert(i);
+    for(i=0;i<n;i++)
+    {
+        j=solve(i);
+        cout<<c[i]<<' ';
+        for(k=0;k<=j;k++)
+            cout<<c[i][k];
+        cout<<endl;
+    }
+}
+ 
+ 
+int main(){
+    read();
+    return 0;
+}
