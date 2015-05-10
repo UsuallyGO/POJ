@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DEBUG 1
+#define DEBUG 0
 #define MAX 110
 #define BIG_DISTANCE 100000000 
 
@@ -52,14 +52,16 @@ void Dijstra(int level)
 		min = Distance[i];
 	    }
 	}
-	printf("J:%d min:%d\n", j, min);
+#if DEBUG
+	printf("U:%d min:%d\n", u, min);
+#endif
 	Visit[u] = 1;
 
 	for(i = 1; i < level; i++)
 	{
 	    if(!Visit[i] && NetWork[u][i] > 0)
 	    {
-		if(Distance[i] > Distance[u] + NetWork[u][i])
+		if(Distance[i] > Distance[u] + NetWork[u][i] || Distance[i] == 0)//0 means not arrivable
 		    Distance[i] = Distance[u] + NetWork[u][i];
 	    }
 	}
@@ -104,7 +106,9 @@ int main()
 	    NetWork[j][i] = num;
 	}
     }
+#if DEBUG
     showBoard(level);
+#endif
     Dijstra(level);
     FindMax(level);
 

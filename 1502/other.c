@@ -59,7 +59,7 @@ int main()
                 if(!vis[k] && sd > d[k]) {node = k; sd = d[k];}
             if(!node) break;
             vis[node] = true;
-//	    printf("J:%d min:%d\n", j-1, sd);
+	    printf("J:%d min:%d\n", j-1, sd);
             for(int k = 1; k <= n; k++)
                 if(!vis[k] && G[node][k] != -1 && d[k] > d[node] + G[node][k])
                     d[k] = d[node] + G[node][k];
