@@ -1,0 +1,6 @@
+#!/bin/bash
+
+./gen > inx
+cat inx | ./other > otherOut
+cat inx | ./1088 > 1088Out
+diff 1088Out otherOut
