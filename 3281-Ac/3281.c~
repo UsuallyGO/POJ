@@ -1,0 +1,130 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 105
+
+int Graph[MAX][MAX];
+int Queue[10000];
+int cows, foods, drinks;
+int S, T;
+int cur, tail;
+
+inline int DeQue()
+{
+    return Queue[cur++];
+}
+
+inline void EnQue(int x)
+{
+    Queue[tail++] = x;
+}
+
+inline int QueEmpty()
+{
+    if(cur >= tail)
+	return 1;
+    else
+	return 0;
+}
+
+
+int EK()
+{
+    int visit[MAX];
+    int prev[MAX];
+    int i, seek_i;
+    int max, flow;
+
+    max = 0;
+    flow = 1;
+    while(1)
+    {
+	memset(visit, 0, sizeof(visit));
+	memset(prev, 0, sizeof(prev));
+
+	tail = cur = 0;
+	visit[S] = 1;
+	EnQue(S);
+	while(!QueEmpty())
+	{
+	    seek_i = DeQue();
+	    if(seek_i == T)
+		break;
+
+	    for(i = S; i <= T; i++)
+	    {
+		if(!visit[i] && Graph[seek_i][i] > 0)
+		{
+		    EnQue(i);
+		    visit[i] = 1;
+		    prev[i] = seek_i;
+		}
+	    }
+	}
+
+	if(seek_i != T)
+	    break;
+	
+	for(i = T; i > S; i = prev[i])
+	{
+	    Graph[prev[i]][i] -= flow;
+	    Graph[i][prev[i]] += flow;
+	}
+
+	max += flow;
+    }
+
+    return max;
+}
+
+int main()
+{
+    int i, j, k, l, m;
+    int tmp, ans;
+
+    while(scanf("%d %d %d", &cows, &foods, &drinks) != EOF)
+    {
+	S = 0;
+	T = cows + foods + drinks + 1;
+	memset(Graph, 0, sizeof(Graph));
+
+	for(i = 1; i <= foods; i++)
+	    Graph[S][i] = 1;
+	for(i = 1; i <= drinks; i++)
+	    Graph[foods+2*cows+i][T] = 1;
+
+	for(i = 1; i <= cows; i++)
+	{
+	    scanf("%d %d", &j, &k);
+	    if(j == 0)//no food, S links to left cow[i]
+		Graph[S][foods+i];
+	    else
+	    {
+		for(l = 1; l <= j; l++)
+		{
+		    scanf("%d", &tmp);
+		    Graph[tmp][foods+i] = 1;
+		}
+	    }
+	    
+	    Graph[foods+i][foods+cows+i] = 1;//left cow to right cow
+	
+	    if(k == 0)//no drinks, right cow[i] links to T 
+		Graph[foods+2*cows+i][T] = 1;
+	    else
+	    {
+		for(l = 1; l <=k; l++)
+		{
+		    scanf("%d", &tmp);
+		    Graph[foods+cows+i][foods+2*cows+i] = 1;
+		}
+	    }
+	}
+
+	ans = EK();
+	printf("%d\n", ans);
+    }
+
+    return 0;
+}
