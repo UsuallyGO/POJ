@@ -87,7 +87,7 @@ int EK()
 	{
 	    seek_i = DeQue();
 #if DEBUG
-//	    printf("seek_i:%d\n", seek_i);
+	    printf("seek_i:%d\n", seek_i);
 #endif
 	    if(seek_i == T)
 		break;
@@ -147,7 +147,10 @@ int main()
 	    printf("j:%d k:%d\n", j, k);
 #endif
 	    if(j == 0)//no food, S links to left cow[i]
-	;//	Graph[S][foods+i] = 1;
+	    {
+		Graph[S][foods+i] = 1;
+		printf("I j==0, Graph[S][%d]:%d\n", foods+i, Graph[S][foods+i]);
+	    }
 	    else
 	    {
 		for(l = 1; l <= j; l++)
@@ -160,7 +163,7 @@ int main()
 	    Graph[foods+i][foods+cows+i] = 1;//left cow to right cow
 	
 	    if(k == 0)//no drinks, right cow[i] links to T 
-	;//	Graph[foods+cows+i][T] = 1;
+		Graph[foods+cows+i][T] = 1;
 	    else
 	    {
 		for(l = 1; l <=k; l++)
